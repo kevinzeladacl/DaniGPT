@@ -7,12 +7,19 @@ from PIL import Image
 from dotenv import load_dotenv
 load_dotenv()
 
-st.title("DaniGPT 🤖")
-image = Image.open('danigpt.png')
-st.image(image, caption='danigpt')
+st.set_page_config(layout="centered")  
+
+col1, col2 = st.columns([2,3])
+
+with col1:
+    image = Image.open('danigpt.png')
+    st.image(image, width=200)
+
+with col2:
+    st.title("DaniGPT 🤖")
 st.write("Preguntame cualquier cosa sobre python, Judini o Langchain")
 st.write("OJO 👀 No estoy conectado a internet, así que puedo alucinar 😵‍💫, es tu trabajo corroborar que la respuesta que te entregue sea correcta.")
-
+st.markdown('---')
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
