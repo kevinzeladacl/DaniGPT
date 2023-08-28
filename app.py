@@ -49,7 +49,7 @@ if prompt := st.chat_input("En que te puedo ayudar?"):
 
         agent_instance = Agent(api_key=codegpt_api_key, agent_id=codegpt_agent_id)
 
-        full_response = asyncio.run(agent_instance.completion(prompt, stream=True))
+        full_response = asyncio.run(agent_instance.completion(prompt, stream=False))
         
         message_placeholder.markdown(full_response)
     st.session_state.messages.append({"role": "assistant", "content": full_response})
