@@ -3,7 +3,9 @@ import time
 import requests
 import json
 import os
+import asyncio
 from PIL import Image
+from judini.codegpt.agent import Agent
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -42,37 +44,12 @@ if prompt := st.chat_input("En que te puedo ayudar?"):
         message_placeholder = st.empty()
         full_response = ""
         #Judini
-        api_key= os.getenv("JUDINI_API_KEY")
-        agent_id= os.getenv("JUDINI_AGENT_ID")
-        url = 'https://playground.judini.ai/api/v1/agent/'+agent_id
-        headers = {"Content-Type": "application/json; charset=utf-8", "Authorization": "Bearer "+api_key}
-        data = {
-            "messages": [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
-        }
-        response = requests.post(url, headers=headers, json=data, stream=True)
-        raw_data = ''
-        tokens = ''
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                raw_data = chunk.decode('utf-8').replace("data: ", '')
-                if raw_data != "":
-                    lines = raw_data.strip().splitlines()
-                    for line in lines:
-                        line = line.strip()
-                        if line and line != "[DONE]":
-                            try:
-                                json_object = json.loads(line) 
-                                result = json_object['data']
-                                full_response += result
-                                time.sleep(0.05)
-                                # Add a blinking cursor to simulate typing
-                                message_placeholder.markdown(full_response + "▌")
-                            except json.JSONDecodeError:
-                                print(f'Error al decodificar el objeto JSON en la línea: {line}')
+        codegpt_api_key= os.getenv("CODEGPT_API_KEY")
+        codegpt_agent_id= os.getenv("CODEGPT_AGENT_ID")
+
+        agent_instance = Agent(api_key=codegpt_api_key, agent_id=codegpt_agent_id)
+
+        full_response = asyncio.run(agent_instance.completion(prompt, stream=True))
+        
         message_placeholder.markdown(full_response)
     st.session_state.messages.append({"role": "assistant", "content": full_response})
