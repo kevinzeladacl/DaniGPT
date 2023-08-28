@@ -44,8 +44,8 @@ if prompt := st.chat_input("En que te puedo ayudar?"):
         message_placeholder = st.empty()
         full_response = ""
         #Judini
-        codegpt_api_key= os.getenv("CODEGPT_API_KEY")
-        codegpt_agent_id= os.getenv("CODEGPT_AGENT_ID")
+        codegpt_api_key= st.secrets["CODEGPT_API_KEY"]
+        codegpt_agent_id= st.secrets["CODEGPT_AGENT_ID"]
 
         agent_instance = Agent(api_key=codegpt_api_key, agent_id=codegpt_agent_id)
 
